@@ -1,4 +1,4 @@
-import * as drugNames from './constants';
+import * as drugNames from "./constants";
 
 export class Drug {
   constructor(name, expiresIn, benefit) {
@@ -13,56 +13,78 @@ export class Pharmacy {
     this.drugs = drugs;
   }
   updateBenefitValue() {
-    for (var i = 0; i < this.drugs.length; i++) {
-      if (
-        this.drugs[i].name != drugNames.HERBALTEA &&
-        this.drugs[i].name != drugNames.FERVEX
-      ) {
-        if (this.drugs[i].benefit > 0) {
-          if (this.drugs[i].name != drugNames.MAGICPILL) {
-            this.drugs[i].benefit = this.drugs[i].benefit - 1;
-          }
-        }
-      } else {
-        if (this.drugs[i].benefit < 50) {
-          this.drugs[i].benefit = this.drugs[i].benefit + 1;
-          if (this.drugs[i].name == drugNames.FERVEX) {
-            if (this.drugs[i].expiresIn < 11) {
-              if (this.drugs[i].benefit < 50) {
-                this.drugs[i].benefit = this.drugs[i].benefit + 1;
-              }
-            }
-            if (this.drugs[i].expiresIn < 6) {
-              if (this.drugs[i].benefit < 50) {
-                this.drugs[i].benefit = this.drugs[i].benefit + 1;
-              }
-            }
-          }
+    this.drugs.map(drug => {
+      switch (drug.name) {
+        case drugNames.MAGICPILL:
+          drug = Pharmacy.updateBenefitValueMagicPill(drug);
+          break;
+        case drugNames.FERVEX:
+        case drugNames.HERBALTEA:
+          drug = Pharmacy.updateBenefitValueFervexOrHerbalTea(drug);
+          break;
+        default:
+          drug = Pharmacy.updateBenefitValueOtherDrugs(drug);
+          break;
+      }
+    });
+    return this.drugs;
+  }
+
+  static updateBenefitValueOtherDrugs(drug) {
+    drug.expiresIn = drug.expiresIn - 1;
+    const decreaseInBenefit = drug.expiresIn >= 0 ? 1 : 2;
+    drug.benefit = Math.max(0, drug.benefit - decreaseInBenefit);
+    return drug;
+  }
+
+  static updateBenefitValueMagicPill(drug) {
+    return drug;
+  }
+
+  static updateBenefitValueFervexOrHerbalTea(drug) {
+    if (drug.name != drugNames.HERBALTEA && drug.name != drugNames.FERVEX) {
+      if (drug.benefit > 0) {
+        if (drug.name != drugNames.MAGICPILL) {
+          drug.benefit = drug.benefit - 1;
         }
       }
-      if (this.drugs[i].name != drugNames.MAGICPILL) {
-        this.drugs[i].expiresIn = this.drugs[i].expiresIn - 1;
-      }
-      if (this.drugs[i].expiresIn < 0) {
-        if (this.drugs[i].name != drugNames.HERBALTEA) {
-          if (this.drugs[i].name != drugNames.FERVEX) {
-            if (this.drugs[i].benefit > 0) {
-              if (this.drugs[i].name != drugNames.MAGICPILL) {
-                this.drugs[i].benefit = this.drugs[i].benefit - 1;
-              }
+    } else {
+      if (drug.benefit < 50) {
+        drug.benefit = drug.benefit + 1;
+        if (drug.name == drugNames.FERVEX) {
+          if (drug.expiresIn < 11) {
+            if (drug.benefit < 50) {
+              drug.benefit = drug.benefit + 1;
             }
-          } else {
-            this.drugs[i].benefit =
-              this.drugs[i].benefit - this.drugs[i].benefit;
           }
-        } else {
-          if (this.drugs[i].benefit < 50) {
-            this.drugs[i].benefit = this.drugs[i].benefit + 1;
+          if (drug.expiresIn < 6) {
+            if (drug.benefit < 50) {
+              drug.benefit = drug.benefit + 1;
+            }
           }
         }
       }
     }
-
-    return this.drugs;
+    if (drug.name != drugNames.MAGICPILL) {
+      drug.expiresIn = drug.expiresIn - 1;
+    }
+    if (drug.expiresIn < 0) {
+      if (drug.name != drugNames.HERBALTEA) {
+        if (drug.name != drugNames.FERVEX) {
+          if (drug.benefit > 0) {
+            if (drug.name != drugNames.MAGICPILL) {
+              drug.benefit = drug.benefit - 1;
+            }
+          }
+        } else {
+          drug.benefit = drug.benefit - drug.benefit;
+        }
+      } else {
+        if (drug.benefit < 50) {
+          drug.benefit = drug.benefit + 1;
+        }
+      }
+    }
+    return drug;
   }
 }

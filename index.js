@@ -4,7 +4,7 @@ import * as drugNames from "./constants";
 import fs from "fs";
 
 const drugs = [
-  new Drug(drugNames.DOLIPRANE, 20, 30),
+  new Drug("Doliprane", 20, 30),
   new Drug(drugNames.HERBALTEA, 10, 5),
   new Drug(drugNames.FERVEX, 5, 40),
   new Drug(drugNames.MAGICPILL, 15, 40)
