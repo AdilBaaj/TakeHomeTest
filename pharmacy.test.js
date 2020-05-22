@@ -1,5 +1,5 @@
 import { Drug, Pharmacy } from "./pharmacy";
-import * as drugNames from "./constants"
+import * as drugNames from "./constants";
 
 describe("Pharmacy", () => {
   it("should decrease the benefit and expiresIn", () => {
@@ -38,6 +38,34 @@ describe("Pharmacy", () => {
     const drug = new Drug(drugNames.HERBALTEA, 1, 3);
     expect(Pharmacy.updateBenefitValueHerbalTea(drug)).toEqual(
       new Drug(drugNames.HERBALTEA, 0, 4)
+    );
+  });
+
+  it("sould increase benefit by 1 ten days or more before expiration if drug is fervex", () => {
+    const drug = new Drug(drugNames.FERVEX, 11, 3);
+    expect(Pharmacy.updateBenefitValueFervex(drug)).toEqual(
+      new Drug(drugNames.FERVEX, 10, 4)
+    );
+  });
+
+  it("sould increase benefit by 2 between ten and five days before expiration if drug is fervex", () => {
+    const drug = new Drug(drugNames.FERVEX, 10, 3);
+    expect(Pharmacy.updateBenefitValueFervex(drug)).toEqual(
+      new Drug(drugNames.FERVEX, 9, 5)
+    );
+  });
+
+  it("sould increase benefit by 3 between five days before expiration if drug is fervex", () => {
+    const drug = new Drug(drugNames.FERVEX, 5, 3);
+    expect(Pharmacy.updateBenefitValueFervex(drug)).toEqual(
+      new Drug(drugNames.FERVEX, 4, 6)
+    );
+  });
+
+  it("sould drop benefit to 0 after expiration if drug is fervex", () => {
+    const drug = new Drug(drugNames.FERVEX, 0, 30);
+    expect(Pharmacy.updateBenefitValueFervex(drug)).toEqual(
+      new Drug(drugNames.FERVEX, -1, 0)
     );
   });
 });
