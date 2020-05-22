@@ -8,17 +8,24 @@ describe("Pharmacy", () => {
     );
   });
 
-  it("sould decrease benefit by 2 after expiration if drug is not fervex, magic pill, or herbal tea", () => {
+  it("sould decrease benefit by 2 after expiration for other drugs", () => {
     const drug = new Drug("test", 0, 3);
     expect(Pharmacy.updateBenefitValueOtherDrugs(drug)).toEqual(
       new Drug("test", -1, 1)
     );
   });
 
-  it("sould decrease benefit by 1 before expiration if drug is not fervex, magic pill, or herbal tea", () => {
+  it("sould decrease benefit by 1 before expiration for other drugs", () => {
     const drug = new Drug("test", 1, 3);
     expect(Pharmacy.updateBenefitValueOtherDrugs(drug)).toEqual(
       new Drug("test", 0, 2)
+    );
+  });
+
+  it("sould decrease benefit by degradation factore before expiration for other drugs when degradation factor is specified", () => {
+    const drug = new Drug("test", 1, 3);
+    expect(Pharmacy.updateBenefitValueOtherDrugs(drug, 2)).toEqual(
+      new Drug("test", 0, 1)
     );
   });
 

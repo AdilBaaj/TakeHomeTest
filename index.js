@@ -7,7 +7,8 @@ const drugs = [
   new Drug("Doliprane", 20, 30),
   new Drug(drugNames.HERBALTEA, 10, 5),
   new Drug(drugNames.FERVEX, 5, 40),
-  new Drug(drugNames.MAGICPILL, 15, 40)
+  new Drug(drugNames.MAGICPILL, 15, 40),
+  new Drug(drugNames.DAFALGAN, 15, 40)
 ];
 const trial = new Pharmacy(drugs);
 

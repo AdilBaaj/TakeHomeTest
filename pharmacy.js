@@ -12,6 +12,7 @@ export class Pharmacy {
   constructor(drugs = []) {
     this.drugs = drugs;
   }
+
   updateBenefitValue() {
     this.drugs.map(drug => {
       switch (drug.name) {
@@ -24,6 +25,9 @@ export class Pharmacy {
         case drugNames.FERVEX:
           drug = Pharmacy.updateBenefitValueFervex(drug);
           break;
+        case drugNames.DAFALGAN:
+          drug = Pharmacy.updateBenefitValueOtherDrugs(drug, 2);
+          break;
         default:
           drug = Pharmacy.updateBenefitValueOtherDrugs(drug);
           break;
@@ -32,10 +36,13 @@ export class Pharmacy {
     return this.drugs;
   }
 
-  static updateBenefitValueOtherDrugs(drug) {
+  static updateBenefitValueOtherDrugs(drug, degradationFactor=1) {
     drug.expiresIn = drug.expiresIn - 1;
     const decreaseInBenefit = drug.expiresIn >= 0 ? 1 : 2;
-    drug.benefit = Math.max(0, drug.benefit - decreaseInBenefit);
+    drug.benefit = Math.max(
+      0,
+      drug.benefit - decreaseInBenefit * degradationFactor
+    );
     return drug;
   }
 
