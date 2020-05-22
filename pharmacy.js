@@ -51,49 +51,20 @@ export class Pharmacy {
   }
 
   static updateBenefitValueFervex(drug) {
-    if (drug.name != drugNames.HERBALTEA && drug.name != drugNames.FERVEX) {
-      if (drug.benefit > 0) {
-        if (drug.name != drugNames.MAGICPILL) {
-          drug.benefit = drug.benefit - 1;
-        }
-      }
-    } else {
-      if (drug.benefit < 50) {
-        drug.benefit = drug.benefit + 1;
-        if (drug.name == drugNames.FERVEX) {
-          if (drug.expiresIn < 11) {
-            if (drug.benefit < 50) {
-              drug.benefit = drug.benefit + 1;
-            }
-          }
-          if (drug.expiresIn < 6) {
-            if (drug.benefit < 50) {
-              drug.benefit = drug.benefit + 1;
-            }
-          }
-        }
-      }
+    drug.expiresIn = drug.expiresIn - 1;
+    let increaseInBenefit = 1;
+
+    if (drug.expiresIn <= 4) {
+      increaseInBenefit = 3;
+    } else if (drug.expiresIn <= 9) {
+      increaseInBenefit = 2;
     }
-    if (drug.name != drugNames.MAGICPILL) {
-      drug.expiresIn = drug.expiresIn - 1;
-    }
-    if (drug.expiresIn < 0) {
-      if (drug.name != drugNames.HERBALTEA) {
-        if (drug.name != drugNames.FERVEX) {
-          if (drug.benefit > 0) {
-            if (drug.name != drugNames.MAGICPILL) {
-              drug.benefit = drug.benefit - 1;
-            }
-          }
-        } else {
-          drug.benefit = drug.benefit - drug.benefit;
-        }
-      } else {
-        if (drug.benefit < 50) {
-          drug.benefit = drug.benefit + 1;
-        }
-      }
-    }
+
+    const isDrugExpired = drug.expiresIn < 0 ? 0 : 1;
+    drug.benefit = Math.min(
+      50,
+      isDrugExpired * (drug.benefit + increaseInBenefit)
+    );
     return drug;
   }
 }
