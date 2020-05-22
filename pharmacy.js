@@ -18,9 +18,11 @@ export class Pharmacy {
         case drugNames.MAGICPILL:
           drug = Pharmacy.updateBenefitValueMagicPill(drug);
           break;
-        case drugNames.FERVEX:
         case drugNames.HERBALTEA:
-          drug = Pharmacy.updateBenefitValueFervexOrHerbalTea(drug);
+          drug = Pharmacy.updateBenefitValueHerbalTea(drug);
+          break;
+        case drugNames.FERVEX:
+          drug = Pharmacy.updateBenefitValueFervex(drug);
           break;
         default:
           drug = Pharmacy.updateBenefitValueOtherDrugs(drug);
@@ -41,7 +43,14 @@ export class Pharmacy {
     return drug;
   }
 
-  static updateBenefitValueFervexOrHerbalTea(drug) {
+  static updateBenefitValueHerbalTea(drug) {
+    drug.expiresIn = drug.expiresIn - 1;
+    const increaseInBenefit = drug.expiresIn >= 0 ? 1 : 2;
+    drug.benefit = Math.min(50, drug.benefit + increaseInBenefit);
+    return drug;
+  }
+
+  static updateBenefitValueFervex(drug) {
     if (drug.name != drugNames.HERBALTEA && drug.name != drugNames.FERVEX) {
       if (drug.benefit > 0) {
         if (drug.name != drugNames.MAGICPILL) {
